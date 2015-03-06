@@ -29,9 +29,9 @@ public class CameraTestScene extends Scene {
 		SPP = 1;
 		
 		// Specify which camera, film, and tonemapper to use
-		Vector3f eye = new Vector3f(0.5f, 0.5f, 3.f);
+		Vector3f eye = new Vector3f(-0.95f, -0.95f, 3.f);
 		Vector3f lookAt = new Vector3f(0.5f, 0.f, 0.f);
-		Vector3f up = new Vector3f(0.2f, 1.f, 0.f);
+		Vector3f up = new Vector3f(0, 1.f, 0.f);
 		float fov = 60.f;
 		float aspect = 16.f/9.f;
 		camera = new PinholeCamera(eye, lookAt, up, fov, aspect, width, height);
