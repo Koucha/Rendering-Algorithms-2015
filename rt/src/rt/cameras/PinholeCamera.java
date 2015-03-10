@@ -1,16 +1,15 @@
 package rt.cameras;
 
 import javax.vecmath.Matrix3f;
-import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
-import javax.vecmath.Vector4f;
-
 import rt.Camera;
 import rt.Ray;
 
 /**
  * A simple camera
  * Position and view frustum are defined upon construction.
+ * 
+ * @author Florian
  */
 public class PinholeCamera implements Camera{
 

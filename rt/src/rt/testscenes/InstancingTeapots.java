@@ -15,8 +15,6 @@ import rt.materials.*;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
-import org.omg.CORBA.TRANSACTION_MODE;
-
 /**
  * Test scene for instancing and rendering triangle meshes.
  */

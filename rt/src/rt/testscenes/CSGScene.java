@@ -14,7 +14,7 @@ import rt.samplers.*;
 import rt.tonemappers.ClampTonemapper;
 
 public class CSGScene extends Scene {
-	
+	Matrix4f rotateYZ;
 	public CSGScene()
 	{
 		// Output file name
@@ -29,6 +29,9 @@ public class CSGScene extends Scene {
 	
 		// Number of samples per pixel
 		SPP = 32;
+		
+		rotateYZ = new Matrix4f();
+		rotateYZ.rotX(((float)-Math.PI)/2.0f);
 
 		outputFilename = outputFilename + " " + String.format("%d", SPP) + "SPP";
 		outputFilename = outputFilename + " " + String.format("%d", width) + "x";
@@ -46,10 +49,12 @@ public class CSGScene extends Scene {
 		
 		// Specify which integrator and sampler to use
 		integratorFactory = new WhittedIntegratorFactory();
+//		integratorFactory = new ReflectiveIntegratorFactory();
+//		integratorFactory = new RefractiveIntegratorFactory();
 //		integratorFactory = new BDPathTracingIntegratorFactory(this);
 //		integratorFactory = new PathTracingIntegratorFactory();
 		
-		Material refractive = new Refractive(1.3f);
+		Material refractive = new rt.materials.Blinn(new Spectrum(1.f, 0.8f, 0.2f), new Spectrum(0.5f, 0.8f, 1f), 11);//TODO new Refractive(1.3f);
 		
 		// Make a conical "bowl" by subtracting cross-sections of two cones
 		CSGSolid outerCone = coneCrossSection(60.f, refractive);
@@ -71,9 +76,11 @@ public class CSGScene extends Scene {
 		doubleCone = new CSGInstance(doubleCone, trans);
 		
 		// Something like a"soap bar"
-		Material yellow = new Diffuse(new Spectrum(1.f, 0.8f, 0.2f));
+		Material yellow = new rt.materials.Blinn(new Spectrum(1.f, 0.8f, 0.2f), new Spectrum(0.5f, 0.8f, 1f), 11);//TODO new Diffuse(new Spectrum(1.f, 0.8f, 0.2f));
 		CSGSolid soap = new CSGUnitCylinder(yellow);
+		soap = new CSGInstance(soap, rotateYZ);
 		CSGSolid cap = new CSGTwoSidedInfiniteCone(yellow);
+		cap = new CSGInstance(cap, rotateYZ);
 		// Smoothen the edges
 		trans.setIdentity();
 		trans.m23 = -0.8f;
@@ -105,7 +112,7 @@ public class CSGScene extends Scene {
 		soap = new CSGInstance(soap, trans);
 		
 		// Ground and back plane
-		XYZGrid grid = new XYZGrid(new Spectrum(0.2f, 0.f, 0.f), new Spectrum(1.f, 1.f, 1.f), 0.1f, new Vector3f(0.f, 0.3f, 0.f));
+		Material grid = new XYZGrid(new Spectrum(0.2f, 0.f, 0.f), new Spectrum(1.f, 1.f, 1.f), 0.1f, new Vector3f(0.f, 0.3f, 0.f));
 		Plane groundPlane = new Plane(new Vector3f(0.f, 1.f, 0.f), 1.5f);
 		groundPlane.material = grid;
 		Plane backPlane = new Plane(new Vector3f(0.f, 0.f, 1.f), 3.15f);
@@ -143,7 +150,8 @@ public class CSGScene extends Scene {
 	private CSGSolid coneCrossSection(float a, Material material)
 	{
 		// Makes a two-sided infinite cone with apex angle 90 degrees
-		CSGTwoSidedInfiniteCone doubleCone = new CSGTwoSidedInfiniteCone(material);
+		CSGSolid doubleCone = new CSGTwoSidedInfiniteCone(material);
+		doubleCone = new CSGInstance(doubleCone, rotateYZ);
 		// Scaling factor along the cone axis corresponding to apex angle
 		float s = (float)Math.tan((90-a/2)/180.f*(float)Math.PI);
 		
@@ -166,11 +174,11 @@ public class CSGScene extends Scene {
 	
 	public void finish()
 	{
-		if(integratorFactory instanceof BDPathTracingIntegratorFactory)
-		{
-			((BDPathTracingIntegratorFactory)integratorFactory).writeLightImage("../output/testscenes/lightimage");
-			((BDPathTracingIntegratorFactory)integratorFactory).addLightImage(film);
-		}
+//		if(integratorFactory instanceof BDPathTracingIntegratorFactory)
+//		{
+//			((BDPathTracingIntegratorFactory)integratorFactory).writeLightImage("../output/testscenes/lightimage");
+//			((BDPathTracingIntegratorFactory)integratorFactory).addLightImage(film);
+//		}
 	}
 
 }

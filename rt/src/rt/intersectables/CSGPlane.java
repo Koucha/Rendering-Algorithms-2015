@@ -36,6 +36,22 @@ public class CSGPlane extends CSGSolid {
 		material = new Diffuse(new Spectrum(1.f, 1.f, 1.f));
 	}		
 	
+	/**
+	 * Makes a CSG plane.
+	 * 
+	 * @param normal the plane normal
+	 * @param d distance of the plane to the origin, along the normal direction (sign is important!)
+	 * @param material material of the plane
+	 */
+	public CSGPlane(Vector3f normal, float d, Material material)
+	{
+		this.normal = new Vector3f(normal);
+		this.normal.normalize();
+		this.d = d;
+		
+		this.material = material;
+	}
+
 	public ArrayList<IntervalBoundary> getIntervalBoundaries(Ray r)
 	{
 		ArrayList<IntervalBoundary> boundaries = new ArrayList<IntervalBoundary>();

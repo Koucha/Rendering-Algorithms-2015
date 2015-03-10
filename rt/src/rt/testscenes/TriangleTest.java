@@ -1,6 +1,5 @@
 package rt.testscenes;
 
-import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import rt.*;

@@ -39,7 +39,7 @@ public class Blinn extends Scene {
 		tonemapper = new ClampTonemapper();
 		
 		// Specify which integrator and sampler to use
-		integratorFactory = new PointLightIntegratorFactory();
+		integratorFactory = new WhittedIntegratorFactory();
 		samplerFactory = new OneSamplerFactory();
 
 		// Ground plane
