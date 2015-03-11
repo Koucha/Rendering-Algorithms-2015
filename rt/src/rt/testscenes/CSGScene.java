@@ -48,13 +48,13 @@ public class CSGScene extends Scene {
 		tonemapper = new ClampTonemapper();
 		
 		// Specify which integrator and sampler to use
-		integratorFactory = new WhittedIntegratorFactory();
+//		integratorFactory = new WhittedIntegratorFactory();
 //		integratorFactory = new ReflectiveIntegratorFactory();
-//		integratorFactory = new RefractiveIntegratorFactory();
+		integratorFactory = new RefractiveIntegratorFactory();
 //		integratorFactory = new BDPathTracingIntegratorFactory(this);
 //		integratorFactory = new PathTracingIntegratorFactory();
 		
-		Material refractive = new rt.materials.Blinn(new Spectrum(1.f, 0.8f, 0.2f), new Spectrum(0.5f, 0.8f, 1f), 11);//TODO new Refractive(1.3f);
+		Material refractive = new Refractive(1.3f);
 		
 		// Make a conical "bowl" by subtracting cross-sections of two cones
 		CSGSolid outerCone = coneCrossSection(60.f, refractive);
@@ -76,7 +76,7 @@ public class CSGScene extends Scene {
 		doubleCone = new CSGInstance(doubleCone, trans);
 		
 		// Something like a"soap bar"
-		Material yellow = new rt.materials.Blinn(new Spectrum(1.f, 0.8f, 0.2f), new Spectrum(0.5f, 0.8f, 1f), 11);//TODO new Diffuse(new Spectrum(1.f, 0.8f, 0.2f));
+		Material yellow =  new Diffuse(new Spectrum(1.f, 0.8f, 0.2f));
 		CSGSolid soap = new CSGUnitCylinder(yellow);
 		soap = new CSGInstance(soap, rotateYZ);
 		CSGSolid cap = new CSGTwoSidedInfiniteCone(yellow);

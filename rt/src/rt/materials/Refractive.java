@@ -123,29 +123,50 @@ public class Refractive implements Material {
 	{
 		ShadingSample ss = new ShadingSample();
 		
-		float n1, n2;
-		float minusDot = hitRecord.normal.dot(hitRecord.w);
+		float nt, r0;
+		float cosI = hitRecord.normal.dot(hitRecord.w);
 		
-		if(minusDot > 0)	// entering
+		if(cosI > 0)	// entering
 		{
-			n1 = 1;
-			n2 = n;
+			nt = 1.0f/n;
+			r0 = (1 - n)/(1 + n);
+			r0 *= r0;
+			ss.w = new Vector3f(hitRecord.normal);
 		}else
 		{
-			n1 = n;
-			n2 = 1;
+			nt = n;
+			r0 = (n - 1)/(n + 1);
+			r0 *= r0;
+			cosI *= -1;
+			ss.w = new Vector3f(hitRecord.normal);
+			ss.w.negate();
 		}
 		
-		ss.w = new Vector3f(hitRecord.normal);
-		ss.w.scale((float) (n1/n2*minusDot - Math.sqrt(1 - n1*n1/n2/n2*(1 - minusDot*minusDot))));
+		float sin2 = nt*nt*(1 - cosI*cosI);
+		
+		if(sin2 > 1)
+		{
+			ss.w = null;
+			return ss;
+		}
+		
+		float cosT = (float) Math.sqrt(1 - sin2);
+		
+		ss.w.scale(nt*cosI - cosT);
 		Vector3f temp = new Vector3f(hitRecord.w);
-		temp.scale(-n1/n2);
-		ss.w.sub(temp);
+		temp.scale(-nt);
+		ss.w.add(temp);
 		
 		ss.brdf = new Spectrum(1,1,1);
 		ss.brdf.mult(r);
 		
-		ss.p = calculateFresnel(hitRecord, ss.w);
+		if(nt > 1)
+		{
+			cosI = cosT;
+		}
+		
+		float x = 1 - cosI;
+		ss.p = r0 + (1 - r0)*x*x*x*x*x;
 		
 		return ss;
 	}
@@ -165,41 +186,6 @@ public class Refractive implements Material {
 	@Override
 	public boolean castsShadows() {
 		return true;
-	}
-	
-	private float calculateFresnel(HitRecord hitRecord, Vector3f refdir)
-	{
-		float n1, n2;
-		float minusDot = hitRecord.normal.dot(hitRecord.w);
-		
-		if(minusDot > 0)	// entering
-		{
-			n1 = 1;
-			n2 = n;
-		}else
-		{
-			n1 = n;
-			n2 = 1;
-		}
-		
-		float r0 = ((n1-n2)/(n1+n2))*((n1-n2)/(n1+n2));
-		float r;
-		
-		if(n1 <= n2)
-		{
-			r = r0 + (1 - r0)*(1 - minusDot)*(1 - minusDot)*(1 - minusDot)*(1 - minusDot)*(1 - minusDot);
-		}else
-		{
-			if(Math.acos(minusDot) > Math.asin(n2/n1))	//total inner reflection
-			{
-				r = 1;
-			}else
-			{
-				r = r0 + (1 - r0)*(1 + hitRecord.normal.dot(refdir))*(1 + hitRecord.normal.dot(refdir))*(1 + hitRecord.normal.dot(refdir))*(1 + hitRecord.normal.dot(refdir))*(1 + hitRecord.normal.dot(refdir));
-			}
-		}
-		
-		return r;
 	}
 
 }

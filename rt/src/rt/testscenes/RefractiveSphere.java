@@ -43,7 +43,7 @@ public class RefractiveSphere extends Scene {
 		integratorFactory = new RefractiveIntegratorFactory();
 		samplerFactory = new RandomSamplerFactory();		
 		
-		Material refractive = new Refractive(new Spectrum(0.2f, 0.f, 0.f), new Spectrum(.3f, .3f, .3f), 21, 1f, 1.3f);
+		Material refractive = new Refractive(new Spectrum(0.2f, 0.3f, 0.1f), new Spectrum(.2f, .2f, .2f), 21, 0.5f, 1.01f);
 
 		
 		// Ground and back plane
@@ -68,11 +68,11 @@ public class RefractiveSphere extends Scene {
 		
 		// Light sources
 		Vector3f lightPos = new Vector3f(eye);
-		lightPos.add(new Vector3f(-1.f, 0.f, 0.f));
-		LightGeometry pointLight1 = new PointLight(lightPos, new Spectrum(14.f, 14.f, 14.f));
-		lightPos.add(new Vector3f(2.f, 0.f, 0.f));
-		LightGeometry pointLight2 = new PointLight(lightPos, new Spectrum(14.f, 14.f, 14.f));
-		LightGeometry pointLight3 = new PointLight(new Vector3f(0.f, 7.f, 0.f), new Spectrum(14.f, 14.f, 14.f));
+		lightPos.add(new Vector3f(-2.f, 1.f, 0.f));
+		LightGeometry pointLight1 = new PointLight(lightPos, new Spectrum(14.f, 10.f, 10.f));
+		lightPos.add(new Vector3f(3.f, 1.f, 0.f));
+		LightGeometry pointLight2 = new PointLight(lightPos, new Spectrum(10.f, 14.f, 10.f));
+		LightGeometry pointLight3 = new PointLight(new Vector3f(0.f, 3.f, 1.5f), new Spectrum(10.f, 10.f, 14.f));
 		lightList = new LightList();
 		lightList.add(pointLight1);
 		lightList.add(pointLight2);

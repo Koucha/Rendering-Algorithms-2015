@@ -90,17 +90,21 @@ public class RefractiveIntegrator implements Integrator {
 		
 		if(hitRecord.material.hasSpecularRefraction())
 		{
-			ShadingSample ss = hitRecord.material.evaluateSpecularReflection(hitRecord);
+			ShadingSample ss = hitRecord.material.evaluateSpecularRefraction(hitRecord);
 			float fresnel = ss.p;
+			Vector3f approxpos;
 			
-			ss.brdf.mult(1 - fresnel);
-			Vector3f approxpos = new Vector3f(hitRecord.normal);
-			approxpos.scale(-0.000001f);
-			approxpos.add(hitRecord.position);
-			ss.brdf.mult(integrate(new Ray(approxpos, new Vector3f(ss.w)), level + 1));
-
-			// Accumulate
-			outgoing.add(ss.brdf);
+			if(ss.w != null)
+			{
+				ss.brdf.mult(1 - fresnel);
+				approxpos = new Vector3f(ss.w);
+				approxpos.scale(0.000001f);
+				approxpos.add(hitRecord.position);
+				ss.brdf.mult(integrate(new Ray(approxpos, new Vector3f(ss.w)), level + 1));
+	
+				// Accumulate
+				outgoing.add(ss.brdf);
+			}
 			
 			ss = hitRecord.material.evaluateSpecularReflection(hitRecord);
 			ss.brdf.mult(fresnel);
