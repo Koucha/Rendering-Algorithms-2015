@@ -5,7 +5,6 @@ import javax.vecmath.Vector3f;
 import rt.HitRecord;
 import rt.Material;
 import rt.Spectrum;
-import rt.Material.ShadingSample;
 
 public class Refractive implements Material {
 
@@ -15,6 +14,26 @@ public class Refractive implements Material {
 	float s;
 	float r;
 	float n;
+	
+	/**
+	 * Creates a Blinn material with spectral reflection and spectral refraction
+	 * The BRDF is calculated according to Blinns formula
+	 * 
+	 * @param kd	diffuse colour
+	 * @param ks	spectral colour
+	 * @param s		spectral exponent
+	 * @param r		reflectance [0,1] where 0 - only diffuse and 1 - only spectral
+	 * @param n		refractive index of the material
+	 */
+	public Refractive(float n)
+	{
+		this.kd = new Spectrum(0,0,0);
+		this.ks = new Spectrum(0.3f,0.3f,0.3f);
+		this.ka = kd;
+		this.s = 21;
+		this.r = 1;
+		this.n = n;
+	}
 	
 	/**
 	 * Creates a Blinn material with spectral reflection and spectral refraction
@@ -125,6 +144,8 @@ public class Refractive implements Material {
 		
 		ss.brdf = new Spectrum(1,1,1);
 		ss.brdf.mult(r);
+		
+		ss.p = calculateFresnel(hitRecord, ss.w);
 		
 		return ss;
 	}

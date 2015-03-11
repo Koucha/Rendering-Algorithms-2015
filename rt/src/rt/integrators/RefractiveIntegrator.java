@@ -14,6 +14,7 @@ import rt.Sampler;
 import rt.Scene;
 import rt.Spectrum;
 import rt.StaticVecmath;
+import rt.Material.ShadingSample;
 
 /**
  * Integrator for Whitted style ray tracing.
@@ -29,10 +30,18 @@ public class RefractiveIntegrator implements Integrator {
 		this.root = scene.getIntersectable();
 	}
 
-	/**
-	 * TODO
-	 */
-	public Spectrum integrate(Ray r) {
+	public Spectrum integrate(Ray r)
+	{
+		return integrate(r, 0);
+	}
+	
+	public Spectrum integrate(Ray r, int level)
+	{
+		
+		if(level > 3)
+		{
+			return new Spectrum(0,0,0);
+		}
 
 		HitRecord hitRecord = root.intersect(r);
 		// immediately return background color if nothing was hit
@@ -78,6 +87,43 @@ public class RefractiveIntegrator implements Integrator {
 			// Accumulate
 			outgoing.add(s);
 		}
+		
+		if(hitRecord.material.hasSpecularRefraction())
+		{
+			ShadingSample ss = hitRecord.material.evaluateSpecularReflection(hitRecord);
+			float fresnel = ss.p;
+			
+			ss.brdf.mult(1 - fresnel);
+			Vector3f approxpos = new Vector3f(hitRecord.normal);
+			approxpos.scale(-0.000001f);
+			approxpos.add(hitRecord.position);
+			ss.brdf.mult(integrate(new Ray(approxpos, new Vector3f(ss.w)), level + 1));
+
+			// Accumulate
+			outgoing.add(ss.brdf);
+			
+			ss = hitRecord.material.evaluateSpecularReflection(hitRecord);
+			ss.brdf.mult(fresnel);
+			approxpos = new Vector3f(hitRecord.normal);
+			approxpos.scale(0.000001f);
+			approxpos.add(hitRecord.position);
+			ss.brdf.mult(integrate(new Ray(approxpos, new Vector3f(ss.w)), level + 1));
+
+			// Accumulate
+			outgoing.add(ss.brdf);
+			
+		}else if(hitRecord.material.hasSpecularReflection())
+		{
+			ShadingSample ss = hitRecord.material.evaluateSpecularReflection(hitRecord);
+			Vector3f approxpos = new Vector3f(hitRecord.normal);
+			approxpos.scale(0.000001f);
+			approxpos.add(hitRecord.position);
+			ss.brdf.mult(integrate(new Ray(approxpos, new Vector3f(ss.w)), level + 1));
+
+			// Accumulate
+			outgoing.add(ss.brdf);
+		}
+		
 		return outgoing;	
 	}
 
@@ -85,4 +131,5 @@ public class RefractiveIntegrator implements Integrator {
 		return sampler.makeSamples(n, 2);
 	}
 
+	
 }
