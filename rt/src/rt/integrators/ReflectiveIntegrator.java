@@ -14,6 +14,7 @@ import rt.Sampler;
 import rt.Scene;
 import rt.Spectrum;
 import rt.StaticVecmath;
+import rt.Material.ShadingSample;
 
 /**
  * Integrator for Whitted style ray tracing.
@@ -78,6 +79,19 @@ public class ReflectiveIntegrator implements Integrator {
 			// Accumulate
 			outgoing.add(s);
 		}
+		
+		if(hitRecord.material.hasSpecularReflection())
+		{
+			ShadingSample ss = hitRecord.material.evaluateSpecularReflection(hitRecord);
+			Vector3f approxpos = new Vector3f(hitRecord.normal);
+			approxpos.scale(0.000001f);
+			approxpos.add(hitRecord.position);
+			ss.brdf.mult(integrate(new Ray(approxpos, new Vector3f(ss.w))));
+
+			// Accumulate
+			outgoing.add(ss.brdf);
+		}
+		
 		return outgoing;	
 	}
 

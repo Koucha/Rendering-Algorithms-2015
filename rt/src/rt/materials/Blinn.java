@@ -13,6 +13,14 @@ public class Blinn implements Material {
 	Spectrum ka;
 	float s;
 	
+	/**
+	 * Creates a Blinn material
+	 * The BRDF is calculated according to Blinns formula
+	 * 
+	 * @param kd	diffuse colour
+	 * @param ks	spectral colour
+	 * @param s		spectral exponent
+	 */
 	public Blinn(Spectrum kd, Spectrum ks, float s)
 	{
 		this.kd = new Spectrum(kd);

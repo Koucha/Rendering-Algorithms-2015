@@ -15,12 +15,12 @@ import javax.vecmath.*;
 /**
  * Test scene for refractive objects, renders a sphere in front of a planar background.
  */
-public class RefractiveSphere extends Scene {
+public class ReflectiveSphere extends Scene {
 		
-	public RefractiveSphere()
+	public ReflectiveSphere()
 	{
 		// Output file name
-		outputFilename = new String("../output/testscenes/RefractiveSphere");
+		outputFilename = new String("../output/testscenes/ReflectiveSphere");
 		
 		// Image width and height in pixels
 		width = 512;
@@ -30,9 +30,9 @@ public class RefractiveSphere extends Scene {
 		SPP = 32;
 		
 		// Specify which camera, film, and tonemapper to use
-		Vector3f eye = new Vector3f(0.f, 0.f, 3.f);
+		Vector3f eye = new Vector3f(0.1f, 3.f, 0.3f);
 		Vector3f lookAt = new Vector3f(0.f, 0.f, 0.f);
-		Vector3f up = new Vector3f(0.f, 1.f, 0.f);
+		Vector3f up = new Vector3f(0.f, 0.f, 1.f);
 		float fov = 60.f;
 		float aspect = 1.f;
 		camera = new PinholeCamera(eye, lookAt, up, fov, aspect, width, height);
@@ -40,10 +40,10 @@ public class RefractiveSphere extends Scene {
 		tonemapper = new ClampTonemapper();
 		
 		// Specify which integrator and sampler to use
-		integratorFactory = new RefractiveIntegratorFactory();
+		integratorFactory = new ReflectiveIntegratorFactory();//new RefractiveIntegratorFactory();
 		samplerFactory = new RandomSamplerFactory();		
 		
-		Material refractive = new Refractive(1.3f);
+		Material reflective = new Reflective(new Spectrum(0.2f, 0.f, 0.f), new Spectrum(.3f, .3f, .3f), 21, 0.8f);
 
 		
 		// Ground and back plane
@@ -54,7 +54,7 @@ public class RefractiveSphere extends Scene {
 		
 		// A sphere for testing
 		Sphere sphere = new Sphere();
-		sphere.material = refractive;
+		sphere.material = reflective;
 		
 		// Collect objects in intersectable list
 		IntersectableList intersectableList = new IntersectableList();
@@ -69,10 +69,10 @@ public class RefractiveSphere extends Scene {
 		// Light sources
 		Vector3f lightPos = new Vector3f(eye);
 		lightPos.add(new Vector3f(-1.f, 0.f, 0.f));
-		LightGeometry pointLight1 = new PointLight(lightPos, new Spectrum(14.f, 14.f, 14.f));
+		LightGeometry pointLight1 = new PointLight(lightPos, new Spectrum(14.f, 4.f, 4.f));
 		lightPos.add(new Vector3f(2.f, 0.f, 0.f));
-		LightGeometry pointLight2 = new PointLight(lightPos, new Spectrum(14.f, 14.f, 14.f));
-		LightGeometry pointLight3 = new PointLight(new Vector3f(0.f, 7.f, 0.f), new Spectrum(14.f, 14.f, 14.f));
+		LightGeometry pointLight2 = new PointLight(lightPos, new Spectrum(8.f, 15.f, 10.f));
+		LightGeometry pointLight3 = new PointLight(new Vector3f(0.f, 0.f, 5.f), new Spectrum(4.f, 4.f, 14.f));
 		lightList = new LightList();
 		lightList.add(pointLight1);
 		lightList.add(pointLight2);
