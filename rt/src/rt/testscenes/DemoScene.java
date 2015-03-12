@@ -15,12 +15,12 @@ import javax.vecmath.*;
 /**
  * Test scene for refractive objects, renders a sphere in front of a planar background.
  */
-public class RefractiveSphere extends Scene {
+public class DemoScene extends Scene {
 		
-	public RefractiveSphere()
+	public DemoScene()
 	{
 		// Output file name
-		outputFilename = new String("../output/testscenes/RefractiveSphere");
+		outputFilename = new String("../output/testscenes/DemoScene");
 		
 		// Image width and height in pixels
 		width = 512;
@@ -30,7 +30,7 @@ public class RefractiveSphere extends Scene {
 		SPP = 32;
 		
 		// Specify which camera, film, and tonemapper to use
-		Vector3f eye = new Vector3f(0.f, 0.f, 3.f);
+		Vector3f eye = new Vector3f(1.f, 1.f, 3.f);
 		Vector3f lookAt = new Vector3f(0.f, 0.f, 0.f);
 		Vector3f up = new Vector3f(0.f, 1.f, 0.f);
 		float fov = 60.f;
@@ -42,8 +42,8 @@ public class RefractiveSphere extends Scene {
 		// Specify which integrator and sampler to use
 		integratorFactory = new RefractiveIntegratorFactory();
 		samplerFactory = new RandomSamplerFactory();		
-		
-		Material refractive = new Refractive(new Spectrum(0.2f, 0.3f, 0.1f), new Spectrum(.2f, .2f, .2f), 21, 0.5f, 1.01f);
+
+		Material refractive = new Refractive(new Spectrum(0.2f, 0.2f, 0.19f), new Spectrum(.1f, .1f, .1f), 32, 0.6f, 1.05f);
 
 		
 		// Ground and back plane
@@ -51,17 +51,27 @@ public class RefractiveSphere extends Scene {
 		XYZGrid grid = new XYZGrid(new Spectrum(0.2f, 0.f, 0.f), new Spectrum(1.f, 1.f, 1.f), 0.01f, new Vector3f(0.f, 0.f, 0.f), 0.125f);
 		Plane backPlane = new Plane(new Vector3f(0.f, 0.f, 1.f), 2.15f);
 		backPlane.material = grid;
+		Plane groundPlane = new Plane(new Vector3f(0.f, 1.f, 0.f), 2.15f);
+		groundPlane.material = grid;
 		
-		// A sphere for testing
-		Sphere sphere = new Sphere();
-		sphere.material = refractive;
+		XYZGrid grid2 = new XYZGrid(new Spectrum(0.0f, 0.f, 0.2f), new Spectrum(1.0f, 1.f, 1.0f), 0.01f, new Vector3f(0.f, 0.f, 0.f), 0.125f);
+		Plane bg1Plane = new Plane(new Vector3f(-1.f, -1.f, -1.f), 5f);
+		backPlane.material = grid2;
+		Plane bg2Plane = new Plane(new Vector3f(1.f, -1.f, 1.f), 5f);
+		groundPlane.material = grid2;
+		
+		// A CSGBody for testing
+		CSGSolid body = new CSGDodecahedron(refractive);
 		
 		// Collect objects in intersectable list
 		IntersectableList intersectableList = new IntersectableList();
 
-		
-		intersectableList.add(sphere);
+
+		intersectableList.add(body);
 		intersectableList.add(backPlane);
+		intersectableList.add(groundPlane);
+		intersectableList.add(bg1Plane);
+		intersectableList.add(bg2Plane);
 		
 		// Set the root node for the scene
 		root = intersectableList;
