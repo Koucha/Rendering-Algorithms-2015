@@ -2,7 +2,6 @@ package rt.intersectables;
 
 import java.util.ArrayList;
 
-import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 
 import rt.Material;

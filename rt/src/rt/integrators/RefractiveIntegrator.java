@@ -38,7 +38,7 @@ public class RefractiveIntegrator implements Integrator {
 	public Spectrum integrate(Ray r, int level)
 	{
 		
-		if(level > 3)
+		if(level > 5)
 		{
 			return new Spectrum(0,0,0);
 		}

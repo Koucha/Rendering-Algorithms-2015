@@ -25,8 +25,24 @@ public class CSGDodecahedron extends CSGSolid {
 	 */
 	public CSGDodecahedron()
 	{
+		setup(new Diffuse(new Spectrum(1.f, 0.f, 0.f)));
+	}
+	
+	/**
+	 * Makes a dodecahedron by specifying planes that contain faces, and using CSG
+	 * intersection. Face normals are computed using the facts that in a dodecahedron
+	 * (1) the top and bottom faces are uniform pentagons, (2) dihedral angles between 
+	 * all faces are pi - arctan(2).
+	 * 
+	 * @param material Material to be used
+	 */
+	public CSGDodecahedron(Material material)
+	{
+		setup(material);
+	}
+
+	private void setup(Material material) {
 		Vector3f normal;
-		Material diffuseMaterial = new Diffuse(new Spectrum(1.f, 0.f, 0.f));
 		
 		// Make CSG planes
 		CSGPlane planes[] = new CSGPlane[12];
@@ -34,7 +50,7 @@ public class CSGDodecahedron extends CSGSolid {
 		// Bottom half
 		normal  = new Vector3f(0.f, -1.f, 0.f);
 		planes[0] = new CSGPlane(normal, -1.f);				
-		planes[0].material = diffuseMaterial;
+		planes[0].material = material;
 
 		for(int i=0; i<5; i++)
 		{
@@ -51,13 +67,13 @@ public class CSGDodecahedron extends CSGSolid {
 			
 			normal = new Vector3f(x, y, z);
 			planes[i+1] = new CSGPlane(normal, -1.f);				
-			planes[i+1].material = diffuseMaterial;
+			planes[i+1].material = material;
 		}
 		
 		// Top half
 		normal = new Vector3f(0.f, 1.f, 0.f);
 		planes[6] = new CSGPlane(normal, -1.f);				
-		planes[6].material = diffuseMaterial;
+		planes[6].material = material;
 
 		for(int i=0; i<5; i++)
 		{
@@ -72,7 +88,7 @@ public class CSGDodecahedron extends CSGSolid {
 			
 			normal = new Vector3f(x, y, z);
 			planes[i+7] = new CSGPlane(normal, -1.f);				
-			planes[i+7].material = diffuseMaterial;
+			planes[i+7].material = material;
 		}
 				
 		// Build CSG tree
