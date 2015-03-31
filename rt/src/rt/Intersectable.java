@@ -14,4 +14,12 @@ public interface Intersectable {
 	 * @return a hit record, should return null if there is no intersection
 	 */
 	public HitRecord intersect(Ray r);
+	
+	/**
+	 * Return the {@link BoundingBox} of the Intersectable in this method.
+	 * If the Intersectable has no finite {@link BoundingBox}, return null.
+	 * 
+	 * @return valid BoundingBox or null
+	 */
+	public BoundingBox getBoundingBox();
 }

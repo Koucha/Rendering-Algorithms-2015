@@ -2,7 +2,6 @@ package rt;
 
 import javax.imageio.ImageIO;
 
-import rt.basicscenes.*;
 import rt.testscenes.*;
 
 import java.util.*;
@@ -24,7 +23,7 @@ public class Main {
 	/** 
 	 * The scene to be rendered.
 	 */
-	public static Scene scene = new DemoScene();
+	public static Scene scene = new BoxCar();
 	/**
 	 * A render task represents a rectangular image region that is rendered
 	 * by a thread in one chunk.

@@ -2,6 +2,7 @@ package rt.intersectables;
 
 import javax.vecmath.*;
 
+import rt.BoundingBox;
 import rt.HitRecord;
 import rt.Intersectable;
 import rt.Ray;
@@ -71,7 +72,13 @@ public class MeshTriangle implements Intersectable {
 		Matrix3f mat = new Matrix3f(x0 - x1, x0 - x2, r.direction.x, 
 									y0 - y1, y0 - y2, r.direction.y, 
 									z0 - z1, z0 - z2, r.direction.z);
-		mat.invert();
+		try{
+			mat.invert();
+		}catch(SingularMatrixException e)
+		{
+			return null;
+		}
+		
 		Vector3f v = new Vector3f(x0 - r.origin.x, y0 - r.origin.y, z0 - r.origin.z);
 		mat.transform(v);
 		
@@ -99,6 +106,41 @@ public class MeshTriangle implements Intersectable {
 		hr.t2.cross(hr.normal, hr.t1);
 		
 		return hr;
+	}
+
+	@Override
+	public BoundingBox getBoundingBox()
+	{
+		float vertices[] = mesh.vertices;
+		
+		// Access the triangle vertices as follows (same for the normals):		
+		// 1. Get three vertex indices for triangle
+		int v0 = mesh.indices[index*3];
+		int v1 = mesh.indices[index*3+1];
+		int v2 = mesh.indices[index*3+2];
+		
+		// 2. Access x,y,z coordinates for each vertex
+		float x0 = vertices[v0*3];
+		float x1 = vertices[v1*3];
+		float x2 = vertices[v2*3];
+		float y0 = vertices[v0*3+1];
+		float y1 = vertices[v1*3+1];
+		float y2 = vertices[v2*3+1];
+		float z0 = vertices[v0*3+2];
+		float z1 = vertices[v1*3+2];
+		float z2 = vertices[v2*3+2];
+		
+		return new BoundingBox(min(x0,x1,x2),max(x0,x1,x2),min(y0,y1,y2),max(y0,y1,y2),min(z0,z1,z2),max(z0,z1,z2));
+	}
+	
+	private float min(float a, float b, float c)
+	{
+		return (a<b)?((a<c)?(a):(c)):((b<c)?(b):(c));
+	}
+	
+	private float max(float a, float b, float c)
+	{
+		return (a>b)?((a>c)?(a):(c)):((b>c)?(b):(c));
 	}
 	
 }

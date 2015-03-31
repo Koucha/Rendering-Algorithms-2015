@@ -2,6 +2,7 @@ package rt.intersectables;
 
 import javax.vecmath.Vector3f;
 
+import rt.BoundingBox;
 import rt.HitRecord;
 import rt.Intersectable;
 import rt.Material;
@@ -16,6 +17,7 @@ public class Sphere implements Intersectable
 {
 	Vector3f position;
 	float radius;
+	BoundingBox bound;
 	public Material material;
 
 	/**
@@ -28,6 +30,7 @@ public class Sphere implements Intersectable
 	{
 		this.position = position;
 		this.radius = radius;
+		bound = new BoundingBox(position, radius);
 	}
 	
 	/**
@@ -37,6 +40,7 @@ public class Sphere implements Intersectable
 	{
 		position = new Vector3f(0,0,0);
 		radius = 1;
+		bound = new BoundingBox(-1,1,-1,1,-1,1);
 	}
 
 	@Override
@@ -89,6 +93,12 @@ public class Sphere implements Intersectable
 		hr.t1.normalize();
 		
 		return hr;
+	}
+
+	@Override
+	public BoundingBox getBoundingBox()
+	{
+		return bound;
 	}
 
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.vecmath.*;
 
+import rt.BoundingBox;
 import rt.Material;
 import rt.Ray;
 import rt.Spectrum;
@@ -16,6 +17,7 @@ import rt.materials.Diffuse;
 public class CSGDodecahedron extends CSGSolid {
 
 	CSGNode root;
+	BoundingBox bound;
 	
 	/**
 	 * Makes a dodecahedron by specifying planes that contain faces, and using CSG
@@ -26,6 +28,7 @@ public class CSGDodecahedron extends CSGSolid {
 	public CSGDodecahedron()
 	{
 		setup(new Diffuse(new Spectrum(1.f, 0.f, 0.f)));
+		bound = new BoundingBox(-1.5f,1.5f,-1.5f,1.5f,-1.5f,1.5f);
 	}
 	
 	/**
@@ -109,5 +112,11 @@ public class CSGDodecahedron extends CSGSolid {
 	ArrayList<IntervalBoundary> getIntervalBoundaries(Ray r)
 	{
 		return root.getIntervalBoundaries(r);
+	}
+
+	@Override
+	public BoundingBox getBoundingBox()
+	{
+		return bound;
 	}
 }

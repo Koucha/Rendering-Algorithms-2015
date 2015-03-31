@@ -1,7 +1,9 @@
 package rt.lightsources;
 
 import java.util.Random;
+
 import javax.vecmath.Vector3f;
+
 import rt.*;
 import rt.materials.PointLightMaterial;
 
@@ -40,6 +42,13 @@ public class PointLight implements LightGeometry {
 		hitRecord.normal = null;
 		hitRecord.p = 1.f;
 		return hitRecord;
+	}
+
+	@Override
+	public BoundingBox getBoundingBox()
+	{
+		// Has no Area
+		return null;
 	}
 
 }

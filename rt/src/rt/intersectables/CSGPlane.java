@@ -2,6 +2,7 @@ package rt.intersectables;
 
 import javax.vecmath.Vector3f;
 
+import rt.BoundingBox;
 import rt.HitRecord;
 import rt.Material;
 import rt.Ray;
@@ -135,5 +136,12 @@ public class CSGPlane extends CSGSolid {
 		{
 			return null;
 		}
+	}
+
+	@Override
+	public BoundingBox getBoundingBox()
+	{
+		//infinite
+		return null;
 	}
 }

@@ -30,7 +30,8 @@ public class InstancingTeapots extends Scene {
 		outputFilename = new String("../output/testscenes/Instancing");
 		
 		// Specify integrator to be used
-		integratorFactory = new PointLightIntegratorFactory();
+		//integratorFactory = new PointLightIntegratorFactory();
+		integratorFactory = new WhittedIntegratorFactory();
 		
 		// Specify pixel sampler to be used
 		samplerFactory = new OneSamplerFactory();
