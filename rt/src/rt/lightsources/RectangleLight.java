@@ -7,7 +7,7 @@ import rt.HitRecord;
 import rt.LightGeometry;
 import rt.Ray;
 import rt.Spectrum;
-import rt.materials.PointLightMaterial;
+import rt.materials.AreaLightMaterial;
 
 /**
  * A rectangle that can be intersected by a ray.
@@ -22,7 +22,7 @@ public class RectangleLight implements LightGeometry {
 	Vector3f normal;
 	float d;
 	BoundingBox bound;
-	public PointLightMaterial pointLightMaterial;
+	public AreaLightMaterial lightMaterial;
 
 	/**
 	 * Creates a Rhomboid surface
@@ -50,7 +50,7 @@ public class RectangleLight implements LightGeometry {
 		normal = new Vector3f();
 		normal.cross(right, top);
 		d = -normal.dot(bl);
-		pointLightMaterial = new PointLightMaterial(emission);
+		lightMaterial = new AreaLightMaterial(emission);
 	}
 
 	public HitRecord intersect(Ray r) {
@@ -76,14 +76,14 @@ public class RectangleLight implements LightGeometry {
 			Vector3f retNormal = new Vector3f(normal);
 			if(normal.dot(r.direction) > 0)
 			{
-				retNormal.negate();
+				//retNormal.negate();
 			}
 			// wIn is incident direction; convention is that it points away from
 			// surface
 			Vector3f wIn = new Vector3f(r.direction);
 			wIn.negate();
 			wIn.normalize();
-			return new HitRecord(t, position, retNormal, wIn, this, pointLightMaterial, u, v);
+			return new HitRecord(t, position, retNormal, wIn, this, lightMaterial, u, v);
 		} else {
 			return null;
 		}
@@ -113,7 +113,7 @@ public class RectangleLight implements LightGeometry {
 		adscaled(position, top, s[1]);
 		HitRecord hitRecord = new HitRecord();
 		hitRecord.position = new Vector3f(position);
-		hitRecord.material = pointLightMaterial;
+		hitRecord.material = lightMaterial;
 		hitRecord.normal = new Vector3f(normal);
 		hitRecord.p = 1.f/(rightlen*toplen);
 		return hitRecord;

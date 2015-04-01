@@ -40,7 +40,12 @@ public class PathTracingIntegrator implements Integrator {
 		// immediately return background color if nothing was hit
 		if(hitRecord == null) { 
 			return new Spectrum(0,0,0);
-		}	
+		}
+		if(LightGeometry.class.isAssignableFrom(hitRecord.intersectable.getClass()))
+		{
+			//return new Spectrum(hitRecord.material.evaluateEmission(hitRecord, hitRecord.w));
+			return new Spectrum(0.8f,0.5f,0.5f);
+		}
 		Spectrum outgoing = new Spectrum(0.f, 0.f, 0.f);
 		
 		// Iterate over all light sources
@@ -71,13 +76,18 @@ public class PathTracingIntegrator implements Integrator {
 			// Multiply together factors relevant for shading, that is, brdf * emission * ndotl * geometry term
 			Spectrum s = new Spectrum(brdfValue);
 			
+			s.mult(lightHit.p);
+			
 			// Multiply with emission
 			s.mult(lightHit.material.evaluateEmission(lightHit, StaticVecmath.negate(lightDir)));
 			
 			// Multiply with cosine of surface normal and incident direction
 			float ndotl = hitRecord.normal.dot(lightDir);
 			ndotl = Math.max(ndotl, 0.f);
-			s.mult(ndotl/15.0f);
+			s.mult(ndotl);
+			
+			//Geometry term
+			s.mult(1/d2);
 			
 			// Accumulate
 			outgoing.add(s);

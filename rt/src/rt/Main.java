@@ -23,7 +23,7 @@ public class Main {
 	/** 
 	 * The scene to be rendered.
 	 */
-	public static Scene scene = new PathtracingBoxPeople();
+	public static Scene scene = new PathtracingBoxLamp();
 	/**
 	 * A render task represents a rectangular image region that is rendered
 	 * by a thread in one chunk.

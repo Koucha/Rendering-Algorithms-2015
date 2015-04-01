@@ -43,6 +43,22 @@ public class CSGSphere extends CSGSolid {
 		radius = 1;
 		bound = new BoundingBox(-1,1,-1,1,-1,1);
 	}
+	
+	/**
+	 * Constructs a sphere with given radius, position and material
+	 * 
+	 * @param position
+	 * @param radius
+	 * @param material
+	 */
+	public CSGSphere(Vector3f position, float radius, Material material)
+	{
+		this.position = position;
+		this.radius = radius;
+		this.material = material;
+		bound = new BoundingBox(position, radius);
+	}
+
 	@Override
 	ArrayList<IntervalBoundary> getIntervalBoundaries(Ray r)
 	{
