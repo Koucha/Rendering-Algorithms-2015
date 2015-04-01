@@ -37,8 +37,8 @@ public class BDPathtracingBoxSphereGlass extends Scene {
 		tonemapper = new ClampTonemapper();
 		
 		// Specify integrator to be used
-		integratorFactory = new BDPathTracingIntegratorFactory(this);
-//		integratorFactory = new PathTracingIntegratorFactory();
+//		integratorFactory = new BDPathTracingIntegratorFactory(this);//TODO
+		integratorFactory = new PathTracingIntegratorFactory();
 		
 		// List of objects
 		IntersectableList objects = new IntersectableList();	
@@ -84,10 +84,10 @@ public class BDPathtracingBoxSphereGlass extends Scene {
 	
 	public void finish()
 	{
-		if(integratorFactory instanceof BDPathTracingIntegratorFactory)
-		{
-			((BDPathTracingIntegratorFactory)integratorFactory).writeLightImage("../output/testscenes/lightimage");
-			((BDPathTracingIntegratorFactory)integratorFactory).addLightImage(film);
-		}
+//		if(integratorFactory instanceof BDPathTracingIntegratorFactory)//TODO
+//		{
+//			((BDPathTracingIntegratorFactory)integratorFactory).writeLightImage("../output/testscenes/lightimage");
+//			((BDPathTracingIntegratorFactory)integratorFactory).addLightImage(film);
+//		}
 	}
 }

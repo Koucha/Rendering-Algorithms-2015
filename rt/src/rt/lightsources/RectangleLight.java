@@ -48,7 +48,7 @@ public class RectangleLight implements LightGeometry {
 		top.normalize();
 		toplen = t.length();
 		normal = new Vector3f();
-		normal.cross(r, t);
+		normal.cross(right, top);
 		d = -normal.dot(bl);
 		pointLightMaterial = new PointLightMaterial(emission);
 	}
@@ -114,7 +114,7 @@ public class RectangleLight implements LightGeometry {
 		HitRecord hitRecord = new HitRecord();
 		hitRecord.position = new Vector3f(position);
 		hitRecord.material = pointLightMaterial;
-		hitRecord.normal = null;
+		hitRecord.normal = new Vector3f(normal);
 		hitRecord.p = 1.f/(rightlen*toplen);
 		return hitRecord;
 	}

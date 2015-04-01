@@ -36,11 +36,11 @@ public class PathtracingBoxPeople extends Scene {
 		int height = 512;
 		float aspect = (float)width/(float)height;
 		camera = new PinholeCamera(eye, lookAt, up, fov, aspect, width, height);
-		film = new BoxFilterFilm(width, height);						
+		film = new AreaFilterFilm(width, height);						
 		tonemapper = new ClampTonemapper();
 		
 		// Specify integrator to be used
-//		integratorFactory = new BDPathTracingIntegratorFactory(this);
+//		integratorFactory = new BDPathTracingIntegratorFactory(this);//TODO
 		integratorFactory = new PathTracingIntegratorFactory();
 		
 		// List of objects
@@ -73,6 +73,7 @@ public class PathtracingBoxPeople extends Scene {
 		{
 			
 			mesh = ObjReader.read("../obj/fireman.obj", 1.f);
+			mesh.material = new Diffuse(new Spectrum(0.8f, 0.8f, 0.8f));
 			timer.reset();
 			accelerator = new BSPAccelerator(mesh);
 			System.out.printf("Accelerator computed in %d ms.\n", timer.timeElapsed());
@@ -123,11 +124,11 @@ public class PathtracingBoxPeople extends Scene {
 	
 	public void finish()
 	{
-		if(integratorFactory instanceof BDPathTracingIntegratorFactory)
-		{
-			((BDPathTracingIntegratorFactory)integratorFactory).writeLightImage("../output/testscenes/lightimage");
-			((BDPathTracingIntegratorFactory)integratorFactory).addLightImage(film);
-		}
+//		if(integratorFactory instanceof BDPathTracingIntegratorFactory)//TODO
+//		{
+//			((BDPathTracingIntegratorFactory)integratorFactory).writeLightImage("../output/testscenes/lightimage");
+//			((BDPathTracingIntegratorFactory)integratorFactory).addLightImage(film);
+//		}
 	}
 	
 }

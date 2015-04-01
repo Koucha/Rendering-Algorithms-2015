@@ -47,7 +47,7 @@ public class Rectangle implements Intersectable {
 		top.normalize();
 		toplen = t.length();
 		normal = new Vector3f();
-		normal.cross(r, t);
+		normal.cross(right, top);
 		d = -normal.dot(bl);
 	}
 
