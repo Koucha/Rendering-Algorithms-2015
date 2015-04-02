@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.vecmath.Vector3f;
 
+import rt.BoundingBox;
 import rt.Material;
 import rt.Ray;
 
@@ -16,6 +17,7 @@ import rt.Ray;
 public class CSGUnitCylinder extends CSGSolid {
 
 	CSGSolid unitc;
+	BoundingBox bound;
 	
 	/**
 	 * Create a unit cylinder
@@ -30,12 +32,20 @@ public class CSGUnitCylinder extends CSGSolid {
 
 		unitc = new CSGNode(topPlane, bottomPlane, CSGNode.OperationType.INTERSECT);
 		unitc = new CSGNode(unitc, cyl, CSGNode.OperationType.INTERSECT);
+
+		bound = new BoundingBox(-1,1,-1,1,-1,1);
 	}
 
 	@Override
 	ArrayList<IntervalBoundary> getIntervalBoundaries(Ray r)
 	{
 		return unitc.getIntervalBoundaries(r);
+	}
+
+	@Override
+	public BoundingBox getBoundingBox()
+	{
+		return bound;
 	}
 
 }

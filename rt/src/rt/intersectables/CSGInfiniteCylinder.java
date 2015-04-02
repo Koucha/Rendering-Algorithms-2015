@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.vecmath.Vector3f;
 
+import rt.BoundingBox;
 import rt.HitRecord;
 import rt.Material;
 import rt.Ray;
@@ -104,6 +105,13 @@ public class CSGInfiniteCylinder extends CSGSolid {
 		hr.t2.normalize();
 		
 		return hr;
+	}
+
+	@Override
+	public BoundingBox getBoundingBox()
+	{
+		// infinite
+		return null;
 	}
 
 }

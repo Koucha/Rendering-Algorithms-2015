@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.vecmath.*;
 
+import rt.BoundingBox;
 import rt.Material;
 import rt.Ray;
 import rt.Spectrum;
@@ -15,6 +16,7 @@ import rt.materials.Diffuse;
 public class CSGCube extends CSGSolid {
 
 	CSGNode root;
+	BoundingBox bound;
 	
 	public CSGCube()
 	{
@@ -37,6 +39,8 @@ public class CSGCube extends CSGSolid {
 		CSGNode n3 = new CSGNode(p5, p6, CSGNode.OperationType.INTERSECT);
 		CSGNode n4 = new CSGNode(n1, n2, CSGNode.OperationType.INTERSECT);
 		root = new CSGNode(n3, n4, CSGNode.OperationType.INTERSECT);
+		
+		bound = new BoundingBox(-1,1,-1,1,-1,1);
 	}
 	
 	public CSGCube(Material mat)
@@ -59,12 +63,20 @@ public class CSGCube extends CSGSolid {
 		CSGNode n3 = new CSGNode(p5, p6, CSGNode.OperationType.INTERSECT);
 		CSGNode n4 = new CSGNode(n1, n2, CSGNode.OperationType.INTERSECT);
 		root = new CSGNode(n3, n4, CSGNode.OperationType.INTERSECT);
+
+		bound = new BoundingBox(-1,1,-1,1,-1,1);
 	}
 
 	@Override
 	ArrayList<IntervalBoundary> getIntervalBoundaries(Ray r)
 	{
 		return root.getIntervalBoundaries(r);
+	}
+
+	@Override
+	public BoundingBox getBoundingBox()
+	{
+		return bound;
 	}
 
 }

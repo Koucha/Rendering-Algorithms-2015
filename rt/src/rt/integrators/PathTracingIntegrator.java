@@ -16,17 +16,19 @@ import rt.Spectrum;
 import rt.StaticVecmath;
 
 /**
- * Integrator for Whitted style ray tracing.
+ * Integrator for path tracing.
  */
-public class WhittedIntegrator implements Integrator {
+public class PathTracingIntegrator implements Integrator {
 
 	LightList lightList;
 	Intersectable root;
+	Sampler sampler;
 	
-	public WhittedIntegrator(Scene scene)
+	public PathTracingIntegrator(Scene scene, Sampler sampler)
 	{
 		this.lightList = scene.getLightList();
 		this.root = scene.getIntersectable();
+		this.sampler = sampler;
 	}
 
 	/**
@@ -38,16 +40,22 @@ public class WhittedIntegrator implements Integrator {
 		// immediately return background color if nothing was hit
 		if(hitRecord == null) { 
 			return new Spectrum(0,0,0);
-		}	
-		Spectrum outgoing = new Spectrum(0.f, 0.f, 0.f);	
+		}
+		if(LightGeometry.class.isAssignableFrom(hitRecord.intersectable.getClass()))
+		{
+			return new Spectrum(hitRecord.material.evaluateEmission(hitRecord, hitRecord.w));
+			//return new Spectrum(0.8f,0.5f,0.5f);
+		}
+		Spectrum outgoing = new Spectrum(0.f, 0.f, 0.f);
+		
 		// Iterate over all light sources
 		Iterator<LightGeometry> it = lightList.iterator();
 		while(it.hasNext()) {
 			LightGeometry lightSource = it.next();
 			
 			// Make direction from hit point to light source position; this is only supposed to work with point lights
-			float dummySample[] = new float[2];
-			HitRecord lightHit = lightSource.sample(dummySample);
+			float[][] samples = sampler.makeSamples(1, 2);
+			HitRecord lightHit = lightSource.sample(samples[0]);
 			Vector3f lightDir = StaticVecmath.sub(lightHit.position, hitRecord.position);
 			float d2 = lightDir.lengthSquared();
 			lightDir.normalize();
@@ -68,6 +76,8 @@ public class WhittedIntegrator implements Integrator {
 			// Multiply together factors relevant for shading, that is, brdf * emission * ndotl * geometry term
 			Spectrum s = new Spectrum(brdfValue);
 			
+			s.mult(lightHit.p);
+			
 			// Multiply with emission
 			s.mult(lightHit.material.evaluateEmission(lightHit, StaticVecmath.negate(lightDir)));
 			
@@ -75,10 +85,9 @@ public class WhittedIntegrator implements Integrator {
 			float ndotl = hitRecord.normal.dot(lightDir);
 			ndotl = Math.max(ndotl, 0.f);
 			s.mult(ndotl);
-						
-			// Geometry term: multiply with 1/(squared distance), only correct like this 
-			// for point lights (not area lights)!
-			s.mult(1.f/d2);
+			
+			//Geometry term
+			s.mult((float) (1/d2/4));
 			
 			// Accumulate
 			outgoing.add(s);

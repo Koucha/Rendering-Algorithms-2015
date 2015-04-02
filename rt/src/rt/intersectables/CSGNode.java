@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
+import rt.BoundingBox;
 import rt.Ray;
 
 /**
@@ -19,11 +20,40 @@ public class CSGNode extends CSGSolid {
 
 	protected CSGSolid left, right;
 	protected OperationType operation;
+	protected BoundingBox bound;
 
 	public CSGNode(CSGSolid left, CSGSolid right, OperationType operation) {
 		this.left = left;
 		this.right = right;
 		this.operation = operation;
+		createBoundingBox();
+	}
+
+	private void createBoundingBox()
+	{
+		switch (operation) {
+			case INTERSECT:
+				if(left.getBoundingBox() == null)
+				{
+					bound = right.getBoundingBox();
+				}else
+				{
+					bound = new BoundingBox(left.getBoundingBox());
+					bound = bound.intersectionWith(left.getBoundingBox());
+				}
+				break;
+			case SUBTRACT:	// easy recalculation not possible
+				bound = left.getBoundingBox();
+			case ADD:
+				if(left.getBoundingBox() == null || right.getBoundingBox() == null)
+				{
+					bound = null;
+				}else
+				{
+					bound = new BoundingBox(left.getBoundingBox());
+					bound = bound.combinationWith(right.getBoundingBox());
+				}
+		}
 	}
 
 	/**
@@ -113,6 +143,12 @@ public class CSGNode extends CSGSolid {
 			b.belongsTo = tag;
 			combined.add(b);
 		}
+	}
+
+	@Override
+	public BoundingBox getBoundingBox()
+	{
+		return bound;
 	}
 
 }

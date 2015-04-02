@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.vecmath.Vector3f;
 
+import rt.BoundingBox;
 import rt.HitRecord;
 import rt.Material;
 import rt.Ray;
@@ -17,6 +18,7 @@ public class CSGSphere extends CSGSolid {
 	
 	Vector3f position;
 	float radius;
+	BoundingBox bound;
 	public Material material;
 
 	/**
@@ -29,6 +31,7 @@ public class CSGSphere extends CSGSolid {
 	{
 		this.position = position;
 		this.radius = radius;
+		bound = new BoundingBox(position, radius);
 	}
 	
 	/**
@@ -38,7 +41,24 @@ public class CSGSphere extends CSGSolid {
 	{
 		position = new Vector3f(0,0,0);
 		radius = 1;
+		bound = new BoundingBox(-1,1,-1,1,-1,1);
 	}
+	
+	/**
+	 * Constructs a sphere with given radius, position and material
+	 * 
+	 * @param position
+	 * @param radius
+	 * @param material
+	 */
+	public CSGSphere(Vector3f position, float radius, Material material)
+	{
+		this.position = position;
+		this.radius = radius;
+		this.material = material;
+		bound = new BoundingBox(position, radius);
+	}
+
 	@Override
 	ArrayList<IntervalBoundary> getIntervalBoundaries(Ray r)
 	{
@@ -105,6 +125,12 @@ ArrayList<IntervalBoundary> bounds = new ArrayList<IntervalBoundary>(2);
 		hr.t1.normalize();
 		
 		return hr;
+	}
+
+	@Override
+	public BoundingBox getBoundingBox()
+	{
+		return bound;
 	}
 
 }

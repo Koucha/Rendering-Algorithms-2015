@@ -2,6 +2,7 @@ package rt.intersectables;
 
 import javax.vecmath.*;
 
+import rt.BoundingBox;
 import rt.HitRecord;
 import rt.Intersectable;
 import rt.Material;
@@ -56,6 +57,13 @@ public class Plane implements Intersectable {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public BoundingBox getBoundingBox()
+	{
+		// infinite plane
+		return null;
 	}
 
 }

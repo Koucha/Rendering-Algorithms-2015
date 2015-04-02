@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.vecmath.Vector3f;
 
+import rt.BoundingBox;
 import rt.HitRecord;
 import rt.Material;
 import rt.Ray;
@@ -117,6 +118,13 @@ public class CSGTwoSidedInfiniteCone extends CSGSolid {
 		hr.normal.normalize();
 		
 		return hr;
+	}
+
+	@Override
+	public BoundingBox getBoundingBox()
+	{
+		// infinite
+		return null;
 	}
 
 }
