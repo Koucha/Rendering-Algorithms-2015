@@ -43,8 +43,8 @@ public class PathTracingIntegrator implements Integrator {
 		}
 		if(LightGeometry.class.isAssignableFrom(hitRecord.intersectable.getClass()))
 		{
-			//return new Spectrum(hitRecord.material.evaluateEmission(hitRecord, hitRecord.w));
-			return new Spectrum(0.8f,0.5f,0.5f);
+			return new Spectrum(hitRecord.material.evaluateEmission(hitRecord, hitRecord.w));
+			//return new Spectrum(0.8f,0.5f,0.5f);
 		}
 		Spectrum outgoing = new Spectrum(0.f, 0.f, 0.f);
 		
@@ -87,7 +87,7 @@ public class PathTracingIntegrator implements Integrator {
 			s.mult(ndotl);
 			
 			//Geometry term
-			s.mult(1/d2);
+			s.mult((float) (1/d2/4));
 			
 			// Accumulate
 			outgoing.add(s);

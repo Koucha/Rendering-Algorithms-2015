@@ -19,7 +19,7 @@ public class AreaLightMaterial implements Material {
 	public AreaLightMaterial(Spectrum emission)
 	{
 		this.emission = new Spectrum(emission);
-		this.emission.mult((float) (1/Math.PI));
+		this.emission.mult((float) (1/Math.PI/4));
 		this.rand = new Random();
 	}
 	

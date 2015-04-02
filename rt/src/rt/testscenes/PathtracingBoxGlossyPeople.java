@@ -1,5 +1,7 @@
 package rt.testscenes;
 
+import java.io.*;
+
 import javax.vecmath.*;
 
 import rt.*;
@@ -12,11 +14,11 @@ import rt.samplers.*;
 import rt.cameras.*;
 import rt.films.*;
 
-public class PathtracingBoxLamp extends Scene {
+public class PathtracingBoxGlossyPeople extends Scene {
 	
-	public PathtracingBoxLamp()
+	public PathtracingBoxGlossyPeople()
 	{	
-		outputFilename = new String("../output/testscenes/PathtracingBoxLamp");
+		outputFilename = new String("../output/testscenes/PathtracingBoxGlossyPeople");
 				
 		// Specify pixel sampler to be used
 		samplerFactory = new RandomSamplerFactory();
@@ -45,7 +47,7 @@ public class PathtracingBoxLamp extends Scene {
 		IntersectableList objects = new IntersectableList();	
 						
 		Rectangle rectangle = new Rectangle(new Vector3f(2.f, -.75f, 2.f), new Vector3f(0.f, 4.f, 0.f), new Vector3f(0.f, 0.f, -4.f));
-		rectangle.material = new Diffuse(new Spectrum(0.8f, 0.8f, 0.8f));
+		rectangle.material = new Diffuse(new Spectrum(0.8f, 0.f, 0.f));
 		objects.add(rectangle);
 	
 		// Bottom
@@ -64,40 +66,60 @@ public class PathtracingBoxLamp extends Scene {
 		objects.add(rectangle);
 		
 		// Add objects
-		Material mat = new Diffuse(new Spectrum(0.5f, 0.8f, 0.5f));
-		Matrix4f trafo = new Matrix4f();
-		trafo.setIdentity();
-		trafo.setTranslation(new Vector3f(0.f, 1.f, 0.f));
-		CSGNode plane = new CSGNode(new CSGPlane(new Vector3f(1,0,0), -0.5f, mat), new CSGPlane(new Vector3f(-1,0,0), -0.5f, mat), CSGNode.OperationType.INTERSECT);
-		CSGNode sphere = new CSGNode(new CSGSphere(new Vector3f(0,0,0), 1.3f, mat), new CSGSphere(new Vector3f(0,0,0), 1.29f, mat), CSGNode.OperationType.SUBTRACT);
-		CSGNode lamp = new CSGNode(sphere, plane, CSGNode.OperationType.SUBTRACT);
-		CSGInstance thelamp = new CSGInstance(lamp, trafo);
-		objects.add(thelamp);
-		
-		// List of lights
-		lightList = new LightList();
-		
-		RectangleLight rectangleLight = new RectangleLight(new Vector3f(-0.25f, 1.f, 0.25f), new Vector3f(0.5f, 0.f, 0.f), new Vector3f(0.f, 0.5f, 0.f), new Spectrum(30.f, 30.f, 30.f));
+		Timer timer = new Timer();
+		Mesh mesh;
+		BSPAccelerator accelerator;
+		try
+		{
+			
+			mesh = ObjReader.read("../obj/fireman.obj", 1.f);
+			mesh.material = new TorranceSparrow(new Spectrum(0.8f, 1.f, 0.8f), new Spectrum(1.f, 1.f, 0.7f), 8, 0.25f, 5);
+			timer.reset();
+			accelerator = new BSPAccelerator(mesh);
+			System.out.printf("Accelerator computed in %d ms.\n", timer.timeElapsed());
+			
+			Matrix4f t = new Matrix4f();
+			t.setIdentity();
+			t.setScale(1.f);
+			t.setTranslation(new Vector3f(-0.6f, 0.25f, 0.f));
+			Instance instance = new Instance(accelerator, t);
+			objects.add(instance); 	
+		} catch(IOException e) 
+		{
+			System.out.printf("Could not read .obj file\n");
+		}
+
+		try
+		{
+			
+			mesh = ObjReader.read("../obj/male.obj", 1.f);
+			timer.reset();
+			accelerator = new BSPAccelerator(mesh);
+			System.out.printf("Accelerator computed in %d ms.\n", timer.timeElapsed());
+			
+			Matrix4f t = new Matrix4f();
+			t.setIdentity();
+			t.setScale(1.f);
+			t.setTranslation(new Vector3f(0.6f, 0.25f, 0.f));
+			Instance instance = new Instance(accelerator, t);
+			objects.add(instance); 	
+		} catch(IOException e) 
+		{
+			System.out.printf("Could not read .obj file\n");
+		}
+
+		Vector3f bottomLeft = new Vector3f(-0.75f, 3.f, 1.5f);
+		Vector3f right = new Vector3f(0.f, 0.f, -0.5f);
+		Vector3f top = new Vector3f(0.5f, 0.f, 0.f);
+		RectangleLight rectangleLight = new RectangleLight(bottomLeft, right, top, new Spectrum(100.f, 100.f, 100.f));
 		objects.add(rectangleLight);
-		lightList.add(rectangleLight);
-		rectangleLight = new RectangleLight(new Vector3f(0.25f, 1.f, -0.25f), new Vector3f(-0.5f, 0.f, 0.f), new Vector3f(0.f, 0.5f, 0.f), new Spectrum(30.f, 30.f, 30.f));
-		objects.add(rectangleLight);
-		lightList.add(rectangleLight);
-		rectangleLight = new RectangleLight(new Vector3f(-0.25f, 1.5f, 0.25f), new Vector3f(0.5f, 0.f, 0.f), new Vector3f(0.f, 0.f, -0.5f), new Spectrum(30.f, 30.f, 30.f));
-		objects.add(rectangleLight);
-		lightList.add(rectangleLight);
-		rectangleLight = new RectangleLight(new Vector3f(-0.25f, 1.f, -0.25f), new Vector3f(0.5f, 0.f, 0.f), new Vector3f(0.f, 0.f, 0.5f), new Spectrum(30.f, 30.f, 30.f));
-		objects.add(rectangleLight);
-		lightList.add(rectangleLight);
-		rectangleLight = new RectangleLight(new Vector3f(0.25f, 1.f, 0.25f), new Vector3f(0.f, 0.f, -0.5f), new Vector3f(0.f, 0.5f, 0.f), new Spectrum(30.f, 30.f, 30.f));
-		objects.add(rectangleLight);
-		lightList.add(rectangleLight);
-		rectangleLight = new RectangleLight(new Vector3f(-0.25f, 1.f, -0.25f), new Vector3f(0.f, 0.f, 0.5f), new Vector3f(0.f, 0.5f, 0.f), new Spectrum(30.f, 30.f, 30.f));
-		objects.add(rectangleLight);
-		lightList.add(rectangleLight);
 		
 		// Connect objects to root
 		root = objects;
+				
+		// List of lights
+		lightList = new LightList();
+		lightList.add(rectangleLight);
 	}
 	
 	public void finish()

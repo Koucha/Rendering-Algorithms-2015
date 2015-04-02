@@ -50,7 +50,9 @@ public class RectangleLight implements LightGeometry {
 		normal = new Vector3f();
 		normal.cross(right, top);
 		d = -normal.dot(bl);
-		lightMaterial = new AreaLightMaterial(emission);
+		Spectrum em = new Spectrum(emission);
+		em.mult(1/rightlen/toplen);
+		lightMaterial = new AreaLightMaterial(em);
 	}
 
 	public HitRecord intersect(Ray r) {
